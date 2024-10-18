@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "505205415427",
+    "project_id": "connectx-653c8",
+    "storage_bucket": "connectx-653c8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:505205415427:android:ce0fd472efd71da0f4b836",
+        "android_client_info": {
+          "package_name": "com.relationship.relationship"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCiw4OwUQYI_HV9Wt2nWaqYZd2AyPkYEwU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:505205415427:android:e69c23b41e6784c2f4b836",
+        "android_client_info": {
+          "package_name": "com.relatioship.relationship"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCiw4OwUQYI_HV9Wt2nWaqYZd2AyPkYEwU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
