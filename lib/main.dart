@@ -1,19 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:relationship/pages/AccueInvestisseur.dart';
 import 'package:relationship/pages/Accueil.dart';
 import 'package:relationship/pages/AccueilEntrepreneur.dart';
+import 'package:relationship/pages/AccueilMentorat.dart';
 import 'package:relationship/pages/AdminDashboard.dart';
 import 'package:relationship/pages/AjouterUnProjet.dart';
 import 'package:relationship/pages/BienvenuePage.dart';
+import 'package:relationship/pages/DemandeDeConseilEntrepreneur.dart';
+import 'package:relationship/pages/DepenseEntrepreneur.dart';
+import 'package:relationship/pages/DepenseInvestisseur.dart';
 import 'package:relationship/pages/DetailsDuProjet.dart';
 import 'package:relationship/pages/IdeeDeProjet.dart';
 import 'package:relationship/pages/InvestisseurProjet.dart';
+import 'package:relationship/pages/ListeDemandePourMentor.dart';
 import 'package:relationship/pages/ManagementUtilisateurs.dart';
+import 'package:relationship/pages/MentorDasboard.dart';
 import 'package:relationship/pages/ModiferProfilEntrepreneur.dart';
+import 'package:relationship/pages/NotificationMentorPAge.dart';
 import 'package:relationship/pages/NotificationPages.dart';
 import 'package:relationship/pages/PartProjet.dart';
 import 'package:relationship/pages/Profil.dart';
 import 'package:relationship/pages/ProjetEnCour.dart';
+import 'package:relationship/pages/RechercheEntrepreneurParMenor.dart';
+import 'package:relationship/pages/SectionMesProjets.dart';
 import 'package:relationship/pages/SwipesPages.dart';
 import 'package:relationship/pages/connexion.dart';
 import 'package:relationship/pages/inscription.dart';
@@ -21,6 +31,7 @@ import 'package:relationship/pages/connexion.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:relationship/pages/rechercherInvestisseur.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:relationship/pages/DepenseEntrepreneur.dart';
 
 
 import 'firebase_options.dart';
@@ -105,15 +116,19 @@ void main() async{
 
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-        home:InvestorDashboard()
+      title: 'Gestion des Projets',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: WelcomPages(),
     );
   }
 }
+

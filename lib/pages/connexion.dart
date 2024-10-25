@@ -2,7 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'AccueInvestisseur.dart';
 import 'AccueilEntrepreneur.dart';
+import 'AccueilMentorat.dart';
 import 'inscription.dart';
 
 class Connexion extends StatefulWidget {
@@ -94,10 +96,18 @@ class _ConnexionState extends State<Connexion> {
         );
       } else if (userRole == "investisseur") {
         // Ajouter la redirection pour investisseur ici
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => PageAccyeilInvesstisseur()),
+        );
       } else if (userRole == "donateur") {
         // Ajouter la redirection pour donateur ici
       } else if (userRole == "mentor") {
         // Ajouter la redirection pour mentor ici
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => AccueilMentor()),
+        );
       } else {
         print('Rôle utilisateur inconnu.');
       }

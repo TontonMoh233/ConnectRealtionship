@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -21,7 +22,7 @@ class _EditProfilState extends State<EditProfil> {
   final TextEditingController _secteurController = TextEditingController();
   final TextEditingController _localiteController = TextEditingController();
 
-  String? _photoUrl;
+  String? photoUrl;
 
   void _showConfirmationDialog() {
     AwesomeDialog(
@@ -31,7 +32,7 @@ class _EditProfilState extends State<EditProfil> {
       title: 'Profil Édité',
       desc: 'Votre profil a bien été édité avec succès.',
       btnOkOnPress: () {
-        Navigator.pop(context); // Retourner à la page précédente
+        Navigator.pop(context);
       },
     ).show();
   }
@@ -41,12 +42,29 @@ class _EditProfilState extends State<EditProfil> {
     final XFile? image = await picker.pickImage(source: ImageSource.gallery);
     if (image != null) {
       setState(() {
-        _photoUrl = image.path; // Utilisez la méthode que vous avez pour télécharger l'image
+        photoUrl = image.path; // Chemin de l'image sélectionnée
       });
     }
   }
 
+  Future<String> _uploadImage(File imageFile) async {
+    try {
+      String fileName = DateTime.now().millisecondsSinceEpoch.toString();
+      Reference storageRef = FirebaseStorage.instance.ref().child('profile_photos/$fileName');
+      await storageRef.putFile(imageFile);
+      return await storageRef.getDownloadURL();
+    } catch (e) {
+      print("Erreur lors du téléchargement de l'image: $e");
+      return '';
+    }
+  }
+
   Future<void> _saveProfile() async {
+    String? uploadedPhotoUrl;
+    if (photoUrl != null && File(photoUrl!).existsSync()) {
+      uploadedPhotoUrl = await _uploadImage(File(photoUrl!)); // Téléchargez l'image
+    }
+
     await FirebaseFirestore.instance.collection('utilisateurs').doc(widget.userId).update({
       'nom': _nomController.text,
       'prenom': _prenomController.text,
@@ -54,10 +72,9 @@ class _EditProfilState extends State<EditProfil> {
       'biographie': _biographieController.text,
       'secteur': _secteurController.text,
       'localite': _localiteController.text,
-      // Vous devez gérer l'upload de l'image ici si nécessaire
-      'photoUrl': _photoUrl ?? '', // Si une nouvelle photo est sélectionnée
+      'photoUrl': uploadedPhotoUrl ?? photoUrl ?? '', // Mettez à jour l'URL de la photo
     });
-    _showConfirmationDialog(); // Afficher le dialogue après la mise à jour
+    _showConfirmationDialog();
   }
 
   @override
@@ -76,7 +93,8 @@ class _EditProfilState extends State<EditProfil> {
       _biographieController.text = data['biographie'] ?? '';
       _secteurController.text = data['secteur'] ?? '';
       _localiteController.text = data['localite'] ?? '';
-      _photoUrl = data['photoUrl'] ?? '';
+      photoUrl = data['photoUrl'] ?? ''; // Récupération de l'URL de la photo
+      setState(() {}); // Actualiser l'état pour afficher l'image
     }
   }
 
@@ -86,7 +104,7 @@ class _EditProfilState extends State<EditProfil> {
       appBar: AppBar(
         title: Text("Éditer le profil"),
       ),
-      body: SingleChildScrollView( // Ajout de SingleChildScrollView
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -97,7 +115,11 @@ class _EditProfilState extends State<EditProfil> {
                 onTap: _pickImage,
                 child: CircleAvatar(
                   radius: 50,
-                  backgroundImage: _photoUrl != null ? FileImage(File(_photoUrl!)) : NetworkImage('https://via.placeholder.com/150') as ImageProvider<Object>,
+                  backgroundImage: photoUrl != null && photoUrl!.isNotEmpty
+                      ? (File(photoUrl!).existsSync()
+                      ? FileImage(File(photoUrl!))
+                      : NetworkImage(photoUrl!) as ImageProvider<Object>)
+                      : NetworkImage('https://via.placeholder.com/150'),
                 ),
               ),
             ),

@@ -15,8 +15,8 @@ class InvestorDashboard extends StatelessWidget {
           bottom: TabBar(
             tabs: [
               Tab(text: 'Projets'),
-              Tab(text: 'Messages'),
               Tab(text: 'Utilisation des Fonds'),
+              Tab(text: 'Messages'),
             ],
           ),
         ),
@@ -41,7 +41,7 @@ class _ProjectsTabState extends State<ProjectsTab> {
   final TextEditingController searchController = TextEditingController();
   final FirebaseAuth auth = FirebaseAuth.instance;
   String selectedSecteur = 'Tous';
-  final List<String> secteurs = ['Tous', 'Technologie', 'Santé', 'Éducation', 'Agriculture', 'Élevage'];
+  final List<String> secteurs = ['Tous', 'technologie', 'santé', 'education', 'agriculture', 'elevage'];
 
   // Affiche la boîte de dialogue pour investir
   void _showInvestmentDialog(BuildContext context, String projectId) {

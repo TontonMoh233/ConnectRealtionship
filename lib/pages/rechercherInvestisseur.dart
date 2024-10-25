@@ -14,7 +14,7 @@ class _RechercheInvestisseursState extends State<RechercheInvestisseurs> {
   final TextEditingController _searchController = TextEditingController();
   String _searchTerm = '';
   String? _selectedSecteur; // Nouveau filtre pour le secteur
-  List<String> secteurs = ['Technologie', 'Santé', 'Éducation', 'Agriculture']; // Exemple de secteurs
+  List<String> secteurs = ['technologie', 'santé', 'éducation', 'agriculture']; // Exemple de secteurs
 
   @override
   Widget build(BuildContext context) {

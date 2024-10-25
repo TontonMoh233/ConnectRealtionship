@@ -64,7 +64,7 @@ class _ProjetencourState extends State<Projetencour> {
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
             .collection('projet')
-            .where('status', isEqualTo: 'en cours')
+            .where('status', isEqualTo: 'en_attente')
             .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {

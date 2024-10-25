@@ -52,6 +52,11 @@ dependencies:
   googleapis_auth: ^1.4.1
   provider: ^6.1.2
   flutter_local_notifications: ^17.2.3
+  simple_animations: ^5.0.2
+  custom_alert_dialog_box: ^1.0.2
+  firebase_storage: ^12.3.4
+  carousel_slider: ^5.0.0
+
 
 dev_dependencies:
   flutter_test:
