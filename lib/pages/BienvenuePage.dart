@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-
 import 'inscription.dart';
 
 class Bienvenuepage extends StatelessWidget {
   const Bienvenuepage({super.key});
-
 
   @override
   Widget build(BuildContext context) {
@@ -17,36 +15,35 @@ class Bienvenuepage extends StatelessWidget {
               fit: BoxFit.cover,
             ),
           ),
-
-
-          Center(
-            child: Positioned.fill(
-           child: Padding(
-               padding: EdgeInsets.only(top: 500),
-             child: ElevatedButton(
-                 onPressed: (){
-                   Navigator.push(
-                     context,
-                     MaterialPageRoute(builder: (context) => Inscription()),
-                   );
-                 },
-                 style: ElevatedButton.styleFrom(
-
-                   backgroundColor: Color(0xFFD9D9D9),),
-                 child: Text("DEMARRER",style: TextStyle(
-                   color: Color(0xFFF30606),
-
-                 ),
-                 )
-             ),
-             )
-             ),
-
-
-
+          // Ici on utilise uniquement Positioned sans Center
+          Positioned(
+            top: 500, // Place le bouton à partir du haut de l'écran
+            left: 0,
+            right: 0,
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 50), // Centrer horizontalement
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => Inscription()),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color(0xFFD9D9D9),
+                  padding: EdgeInsets.symmetric(horizontal: 40, vertical: 20), // Ajuste la taille interne
+                  minimumSize: Size(150, 50), // Définit une taille minimale pour le bouton
+                ),
+                child: Text(
+                  "DEMARRER",
+                  style: TextStyle(
+                    color: Color(0xFFF30606),
+                  ),
+                ),
+              ),
+            ),
           ),
         ],
-
       ),
     );
   }

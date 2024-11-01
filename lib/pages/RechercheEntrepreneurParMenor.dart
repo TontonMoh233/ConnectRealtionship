@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class RechercheEntrepreneur extends StatefulWidget {
   @override
@@ -21,6 +22,13 @@ class _RechercheEntrepreneurState extends State<RechercheEntrepreneur> {
   void initState() {
     super.initState();
     _fetchEntrepreneurs();
+  }
+
+
+  String encodeQueryParameters(Map<String, String> params) {
+    return params.entries
+        .map((e) => '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}')
+        .join('&');
   }
 
   // Récupérer tous les entrepreneurs avec le rôle spécifique depuis Firestore
@@ -146,6 +154,15 @@ class EntrepreneurProfilePage extends StatelessWidget {
   final String entrepreneurId;
 
   EntrepreneurProfilePage({required this.entrepreneurId});
+  // Fonction pour contacter l'entrepreneur
+
+
+
+// Encode les paramètres de la requête
+  String encodeQueryParameters(Map<String, String> params) {
+    return params.entries.map((e) => '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}').join('&');
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -159,6 +176,41 @@ class EntrepreneurProfilePage extends StatelessWidget {
             return Center(child: Text('Erreur: ${snapshot.error}'));
           } else if (!snapshot.hasData || !snapshot.data!.exists) {
             return Center(child: Text('Entrepreneur non trouvé.'));
+
+          }
+
+          void _contactEntrepreneur(String email) async {
+            final Uri emailLaunchUri = Uri(
+              scheme: 'mailto',
+              path: email,
+              query: 'subject=Contact&body=Bonjour, je suis intéressé par votre profil.',
+            );
+
+            try {
+              final bool launched = await launch(emailLaunchUri.toString());
+              if (!launched) {
+                throw 'Could not launch $emailLaunchUri';
+              }
+            } catch (e) {
+              // Affichage du message d'erreur avec un contexte valide
+              showDialog(
+                context: context, // Assurez-vous que ce contexte est valide
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: Text("Erreur"),
+                    content: Text("Aucune application de messagerie n'est installée ou une erreur est survenue."),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop(); // Fermer le dialogue
+                        },
+                        child: Text("OK"),
+                      ),
+                    ],
+                  );
+                },
+              );
+            }
           }
 
           var entrepreneurData = snapshot.data!.data() as Map<String, dynamic>;
@@ -250,6 +302,8 @@ class EntrepreneurProfilePage extends StatelessWidget {
                         child: ElevatedButton.icon(
                           onPressed: () {
                             // Action pour contacter l'entrepreneur
+                            _contactEntrepreneur(entrepreneurData['email'] ?? 'email@exemple.com');
+
                           },
                           icon: Icon(Icons.contact_mail, color: Colors.white), // Couleur de l'icône
                           label: Text(

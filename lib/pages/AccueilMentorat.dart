@@ -60,7 +60,7 @@ class _AccueilMentorState extends State<AccueilMentor> {
       appBar: AppBar(
         elevation: 20,
         title: const Text(
-          "Bienvenue}",
+          "Bienvenue",
           style: TextStyle(
               color: Colors.orange, fontSize: 30, fontWeight: FontWeight.w300),
           textAlign: TextAlign.center,
@@ -83,9 +83,7 @@ class _AccueilMentorState extends State<AccueilMentor> {
 
         ],
       ),
-      body: username != null
-          ? MentorHomePage(username: username!) // Passer le nom d'utilisateur s'il est non nul
-          : Center(child: CircularProgressIndicator()), // Afficher un indicateur de chargement si le nom d'utilisateur est nul
+      body: RechercheEntrepreneur(),
 
       drawer: Drawer(
         shadowColor: Colors.deepOrange,

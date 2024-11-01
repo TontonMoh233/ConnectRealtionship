@@ -1,6 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
+// Définir votre palette de couleurs
+const Color primaryColor = Color(0xFF3F51B5); // Couleur principale (exemple)
+const Color accentColor = Color(0xFFFFC107); // Couleur d'accent (exemple)
+
 class ModifierProjet extends StatefulWidget {
   final String projectId;
   final String titre;
@@ -27,6 +31,7 @@ class _ModifierProjetState extends State<ModifierProjet> {
   final TextEditingController descriptionController = TextEditingController();
   final TextEditingController objectifController = TextEditingController();
   String? selectedSecteur;
+  bool _isUpdating = false;
 
   @override
   void initState() {
@@ -39,6 +44,7 @@ class _ModifierProjetState extends State<ModifierProjet> {
 
   Future<void> updateProject() async {
     if (_formKey.currentState!.validate()) {
+      setState(() => _isUpdating = true);
       try {
         await FirebaseFirestore.instance.collection('projet').doc(widget.projectId).update({
           'titre': titreController.text,
@@ -49,11 +55,13 @@ class _ModifierProjetState extends State<ModifierProjet> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Projet mis à jour avec succès")),
         );
-        Navigator.pop(context); // Retourner à l'écran précédent
+        Navigator.pop(context);
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Erreur lors de la mise à jour du projet : $e")),
         );
+      } finally {
+        setState(() => _isUpdating = false);
       }
     }
   }
@@ -63,72 +71,147 @@ class _ModifierProjetState extends State<ModifierProjet> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Modifier Projet"),
+        backgroundColor: primaryColor,
       ),
-      body: Padding(
+      body: _isUpdating
+          ? const Center(child: CircularProgressIndicator())
+          : SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              TextFormField(
-                controller: titreController,
-                decoration: const InputDecoration(labelText: 'Titre du Projet'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return "Veuillez entrer un titre";
-                  }
-                  return null;
-                },
-              ),
-              TextFormField(
-                controller: descriptionController,
-                decoration: const InputDecoration(labelText: 'Description du Projet'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return "Veuillez entrer une description";
-                  }
-                  return null;
-                },
-              ),
-              TextFormField(
-                controller: objectifController,
-                decoration: const InputDecoration(labelText: 'Objectif Financier'),
-                keyboardType: TextInputType.number,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return "Veuillez entrer un objectif financier";
-                  }
-                  return null;
-                },
-              ),
-              DropdownButtonFormField<String>(
-                decoration: const InputDecoration(labelText: 'Secteur'),
-                value: selectedSecteur,
-                items: const [
-                  DropdownMenuItem(value: 'agriculture', child: Text("AGRICULTURE")),
-                  DropdownMenuItem(value: 'santé', child: Text("SANTÉ")),
-                  DropdownMenuItem(value: 'education', child: Text("ÉDUCATION")),
-                  DropdownMenuItem(value: 'technologie', child: Text("TECHNOLOGIE")),
-                  DropdownMenuItem(value: 'elevage', child: Text("ÉLEVAGE")),
-                ],
-                onChanged: (value) {
-                  setState(() {
-                    selectedSecteur = value;
-                  });
-                },
-                validator: (value) {
-                  if (value == null) {
-                    return "Veuillez sélectionner un secteur";
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: updateProject,
-                child: const Text("Mettre à jour le Projet"),
-              ),
-            ],
+        child: Center(  // Ajout de Center pour centrer les éléments
+          child: Form(
+            key: _formKey,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center, // Centre verticalement
+              crossAxisAlignment: CrossAxisAlignment.center, // Centre horizontalement
+              children: [
+                TextFormField(
+                  controller: titreController,
+                  decoration: InputDecoration(
+                    labelText: 'Titre du Projet',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                      borderSide: BorderSide(color: primaryColor),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                      borderSide: BorderSide(color: accentColor),
+                    ),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return "Veuillez entrer un titre";
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 15),
+                TextFormField(
+                  controller: descriptionController,
+                  decoration: InputDecoration(
+                    labelText: 'Description du Projet',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                      borderSide: BorderSide(color: primaryColor),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                      borderSide: BorderSide(color: accentColor),
+                    ),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return "Veuillez entrer une description";
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 15),
+                TextFormField(
+                  controller: objectifController,
+                  decoration: InputDecoration(
+                    labelText: 'Objectif Financier',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                      borderSide: BorderSide(color: primaryColor),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                      borderSide: BorderSide(color: accentColor),
+                    ),
+                  ),
+                  keyboardType: TextInputType.number,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return "Veuillez entrer un objectif financier";
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 15),
+                DropdownButtonFormField<String>(
+                  decoration: InputDecoration(
+                    labelText: 'Secteur',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                      borderSide: BorderSide(color: primaryColor),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                      borderSide: BorderSide(color: accentColor),
+                    ),
+                  ),
+                  value: selectedSecteur,
+                  items: const [
+                    DropdownMenuItem(value: 'agriculture', child: Text("AGRICULTURE")),
+                    DropdownMenuItem(value: 'santé', child: Text("SANTÉ")),
+                    DropdownMenuItem(value: 'education', child: Text("ÉDUCATION")),
+                    DropdownMenuItem(value: 'technologie', child: Text("TECHNOLOGIE")),
+                    DropdownMenuItem(value: 'elevage', child: Text("ÉLEVAGE")),
+                  ],
+                  onChanged: (value) {
+                    setState(() {
+                      selectedSecteur = value;
+                    });
+                  },
+                  validator: (value) {
+                    if (value == null) {
+                      return "Veuillez sélectionner un secteur";
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 25),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    ElevatedButton(
+                      onPressed: updateProject,
+                      style: ElevatedButton.styleFrom(
+                        foregroundColor: Colors.white, backgroundColor: primaryColor, // Couleur du texte
+                        padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0), // Coins arrondis
+                        ),
+                      ),
+                      child: const Text("Mettre à jour le Projet"),
+                    ),
+                    OutlinedButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: primaryColor, side: BorderSide(color: primaryColor), // Couleur de la bordure
+                        padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0), // Coins arrondis
+                        ),
+                      ),
+                      child: const Text("Annuler"),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),

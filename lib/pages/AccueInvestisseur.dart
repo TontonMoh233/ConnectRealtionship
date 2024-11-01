@@ -87,6 +87,8 @@ class _PageAccyeilInvesstisseurState extends State<PageAccyeilInvesstisseur> {
         ],
       ),
 
+      body: InvestorDashboard(),
+
       drawer: Drawer(
         shadowColor: Colors.deepOrange,
         child: ListView(
@@ -148,13 +150,33 @@ class _PageAccyeilInvesstisseurState extends State<PageAccyeilInvesstisseur> {
               ),
             ),
 
-            ListTile(
-              leading: Icon(Icons.message, color: Colors.redAccent),
-              title: Text(
-                "Messages",
-                style: TextStyle(color: Colors.blue),
+            InkWell(
+                onTap: () {
+                  if (investorId != null) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => InvestorNotificationsPage(
+                          investorId: investorId!,
+                        ),
+                      ),
+                    );
+                  } else {
+                    // Gérer le cas où investorId est null, par exemple :
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('ID d\'investisseur introuvable.')),
+                    );
+                  }
+                },
+
+                child: ListTile(
+                leading: Icon(Icons.notification_important_rounded, color: Colors.redAccent),
+                title: Text(
+                  "Notification",
+                  style: TextStyle(color: Colors.blue),
+                ),
+                trailing: Icon(Icons.arrow_forward_ios_rounded),
               ),
-              trailing: Icon(Icons.arrow_forward_ios_rounded),
             ),
             InkWell(
               onTap: () {

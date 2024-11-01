@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:googleapis/slides/v1.dart';
 import 'package:relationship/pages/AccueInvestisseur.dart';
 import 'package:relationship/pages/Accueil.dart';
 import 'package:relationship/pages/AccueilEntrepreneur.dart';
@@ -23,6 +24,7 @@ import 'package:relationship/pages/PartProjet.dart';
 import 'package:relationship/pages/Profil.dart';
 import 'package:relationship/pages/ProjetEnCour.dart';
 import 'package:relationship/pages/RechercheEntrepreneurParMenor.dart';
+import 'package:relationship/pages/Screepages.dart';
 import 'package:relationship/pages/SectionMesProjets.dart';
 import 'package:relationship/pages/SwipesPages.dart';
 import 'package:relationship/pages/connexion.dart';
@@ -127,7 +129,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: WelcomPages(),
+      home: SplashScreenpages(),
     );
   }
 }

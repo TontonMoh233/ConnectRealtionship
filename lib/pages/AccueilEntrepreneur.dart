@@ -43,6 +43,7 @@ class _AccueilentrepreneurState extends State<Accueilentrepreneur> {
           ),
         ],
       ),
+      body: Projetencour(),
 
       drawer: Drawer(
         shadowColor: Colors.deepOrange,

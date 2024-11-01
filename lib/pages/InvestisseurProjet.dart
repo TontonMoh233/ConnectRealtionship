@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'ContacterEntreprenaria.dart';
 import 'InvestissementServices.dart';
 import 'ServiceNotify.dart';
 
@@ -42,6 +44,8 @@ class _ProjectsTabState extends State<ProjectsTab> {
   final FirebaseAuth auth = FirebaseAuth.instance;
   String selectedSecteur = 'Tous';
   final List<String> secteurs = ['Tous', 'technologie', 'santé', 'education', 'agriculture', 'elevage'];
+
+  // logique pour contacter
 
   // Affiche la boîte de dialogue pour investir
   void _showInvestmentDialog(BuildContext context, String projectId) {
@@ -99,6 +103,8 @@ class _ProjectsTabState extends State<ProjectsTab> {
     );
   }
 
+  //  logique pour Contacter
+
   // Logique pour investir dans un projet
   void investirDansProjet(int montant, String projetId, String investisseursId) {
     final investmentService = ServiceInvestissement();
@@ -153,6 +159,25 @@ class _ProjectsTabState extends State<ProjectsTab> {
     });
   }
 
+  // logique pour recuperer l'email de l'entrepreneur
+  Future<String?> getEntrepreneurEmail(String entrepreneurId) async {
+    try {
+      DocumentSnapshot userDoc = await FirebaseFirestore.instance
+          .collection('utilisateurs')
+          .doc(entrepreneurId)
+          .get();
+
+      if (userDoc.exists) {
+        return userDoc['email']; // Retourner l'email de l'entrepreneur
+      } else {
+        print('Entrepreneur non trouvé');
+      }
+    } catch (e) {
+      print('Erreur lors de la récupération de l\'email: $e');
+    }
+    return null; // Retourner null si l'email n'est pas trouvé
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -187,7 +212,8 @@ class _ProjectsTabState extends State<ProjectsTab> {
             onPressed: () => setState(() {}),
             child: Icon(Icons.search),
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.blue,
+              backgroundColor: Color(0xFFEC5944), // Couleur de fond
+              foregroundColor: Colors.white, // Couleur du texte
             ),
           ),
         ],
@@ -280,26 +306,31 @@ class _ProjectsTabState extends State<ProjectsTab> {
                     ),
                     SizedBox(height: 12),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        ElevatedButton.icon(
-                          onPressed: () {
-                            _showInvestmentDialog(context, project.id);
-                          },
-                          icon: Icon(Icons.monetization_on),
-                          label: Text('Investir'),
+                        ElevatedButton(
+                          onPressed: () => _showInvestmentDialog(context, project.id),
+                          child: Text('Investir'),
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.green,
+                            backgroundColor: Color(0xFFEC5944), // Couleur de fond
+                            foregroundColor: Colors.white, // Couleur du texte
                           ),
                         ),
-                        ElevatedButton.icon(
-                          onPressed: () {
-                            // Logique pour contacter l'entrepreneur
+                        ElevatedButton(
+                          onPressed: () async {
+                            String? email = await getEntrepreneurEmail(project['entrepreneurId']);
+                            if (email != null) {
+                              await launchUrl(Uri.parse('mailto:$email'));
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text('Erreur lors de l\'envoi de l\'email.')),
+                              );
+                            }
                           },
-                          icon: Icon(Icons.message),
-                          label: Text('Contacter'),
+                          child: Text('Contacter'),
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.blue,
+                            backgroundColor: Color(0xFFEC5944), // Couleur de fond
+                            foregroundColor: Colors.white, // Couleur du texte
                           ),
                         ),
                       ],
